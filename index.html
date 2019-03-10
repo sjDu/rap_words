@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>jieba-js demo</title>
+</head>
+<body>
+
+    
+    <!-- <script src="index.js"></script> -->
+    <!-- <script type="text/javascript" 
+    data-main="./index" 
+    src="./scripts/require.js"></script> -->
+    <script src="require-jieba-js.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+   
+<script>
+    // document.getElementById('result').innerText = result
+    // console.log()
+    function doA() {
+        const v = document.getElementById('textA').value
+        doAnalyze(v).then(r => {
+            document.getElementById('result').innerHTML = JSON.stringify(r, null, 2)
+        })
+    }
+</script>
+    <div class="ui form">
+            <div class="field">
+              <label>Text</label>
+              <textarea id="textA"></textarea>
+            </div>
+            <button class="ui inverted yellow button" onclick="doA()">Yellow</button>
+            <pre id="result"></pre>
+          </div>
+
+</script>
+</body>
+</html>
