@@ -1,39 +1,165 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>jieba-js demo</title>
+    <meta charset="UTF-8" />
+    <title>Rap Words</title>
 </head>
+<style>
+    body{
+        margin: 0;
+    }
+    .background-S{
+        background-color: rgba(0, 0, 0, 1);
+        width: 100vw;
+        height: 100vh;
+        padding-top: 40px;
+    }
+
+    pre {
+        color: white;
+    }
+
+    .s-flex {
+        display: flex;
+    }
+    .f1 {
+        flex:1;
+    }
+    .h100 {
+        height: 100%;
+    }
+    .main {
+        height: calc(100vh - 200px);
+    }
+    #textA {
+        width: 100%;
+        height: calc(100% - 40px);
+    }
+
+    .header {
+        background: rgb(32, 35, 42);
+        position: fixed;
+        top: 0;
+        height: 40px;
+        width: 100vw;
+        padding: 5px 15px;
+        color: white;
+
+    }
+    .header .item {
+        align-items: center;
+    }
+    .title {
+        color: red;
+    }
+    p.title {
+        margin: 0;
+    }
+    .f1 ul{
+        color: yellow;
+        overflow: auto;
+    }
+</style>
 <body>
 
     
-    <!-- <script src="index.js"></script> -->
-    <!-- <script type="text/javascript" 
-    data-main="./index" 
-    src="./scripts/require.js"></script> -->
-    <script src="require-jieba-js.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <script src="bundle.js"></script>
+
 
     
    
 <script>
-    // document.getElementById('result').innerText = result
-    // console.log()
-    function doA() {
-        const v = document.getElementById('textA').value
+    var m = require('my-module');
+    var doAnalyze = m.doAnalysis
+    var lyric = m.lyric
+    // function doA() {
+    //     const v = document.getElementById('textA').value
+    //     doAnalyze(v).then(r => {
+    //         document.getElementById('result').innerHTML = JSON.stringify(r, null, 2)
+    //     })
+    // }
+</script>
+
+<div  class="background-S">
+    <div class="header s-flex">
+        <div class="s-flex item">
+                Rap Words
+        </div>
+    </div>
+<div id="root" class="main text container">
+
+
+    
+</div>
+</div>
+
+<!-- Load React. -->
+<!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
+<script type="text/babel">
+
+
+class App extends React.Component {
+    state = {
+        words: []
+    }
+
+    handleClick() {
+        const v = this.text.value
         doAnalyze(v).then(r => {
-            document.getElementById('result').innerHTML = JSON.stringify(r, null, 2)
+            this.setState({
+                words: r
+            })
+            // document.getElementById('result').innerHTML = JSON.stringify(r, null, 2)
         })
     }
-</script>
-    <div class="ui form">
-            <div class="field">
-              <label>Text</label>
-              <textarea id="textA"></textarea>
-            </div>
-            <button class="ui inverted yellow button" onclick="doA()">Yellow</button>
-            <pre id="result"></pre>
-          </div>
+
+    render() {
+        return (
+            <div>
+                <h1 className="title">TF-IDF</h1>
+                <p className="title">Paste your favorite Chinese rap song's lyric in the textarea then click `Go`. It will show key words for this song using TF-IDF</p>
+                
+                <div className="s-flex main">
+                    <div className="f1">      
+                        <div className="ui form h100">
+                            <div className="field h100">
+                                <label>Lyrics</label>
+                                <textarea ref={(e) => this.text = e} id="textA" defaultValue={lyric}></textarea>
+                            </div>
+                            <button className="ui inverted yellow button" onClick={this.handleClick.bind(this)}>Go</button>
+                        </div>
+                    </div>
+                    <div className="f1">
+                        <ul className="h100">
+                            <li>
+                                {`Word (TF-IDF score)`}
+                            </li>
+                            {
+                                this.state.words.slice(0, 30).map(w => {
+                                    return (
+                                        <li>
+                                            {`${w.word} (${w.val})`}
+                                        </li>
+                                    )
+                                })
+                            }
+
+                        </ul>
+                        </div>
+                        </div>
+                        </div>
+                        );
+                    }
+                }
+                // <pre id="result">{JSON.stringify(this.state.words, null, 2)}</pre>
+ReactDOM.render(
+    <App />,
+    document.getElementById('root')
+);
+
 
 </script>
 </body>

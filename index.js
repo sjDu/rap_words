@@ -4,11 +4,11 @@ require('./scripts/main.js');
 dict1 = require('./scripts/data/dictionary.js');
 dict2 = require('./scripts/data/dict_custom.js');
 
-var Segment = require('segment');
-// 创建实例
-var segment = new Segment();
-// 使用默认的识别模块及字典，载入字典文件需要1秒，仅初始化时执行一次即可
-segment.useDefault();
+// var Segment = require('segment');
+// // 创建实例
+// var segment = new Segment();
+// // 使用默认的识别模块及字典，载入字典文件需要1秒，仅初始化时执行一次即可
+// segment.useDefault();
 
 
 // console.log(tfidf.tfidf("American", `
@@ -216,9 +216,9 @@ WE GRINDING 黃金級的 SKY TEAM
 我們造飛機 造飛機 我們準備要飛
 `
 
-// console.log(segment.doSegment(lyric, {simple:true}));
-const result = tfidf.analysis(segment.doSegment(splitedLyric, {simple:true}).join(" "))
-console.log('show key words', result.slice(0, 30))
+// // console.log(segment.doSegment(lyric, {simple:true}));
+// const result = tfidf.analysis(segment.doSegment(splitedLyric, {simple:true}).join(" "))
+// console.log('show key words', result.slice(0, 30))
 
 // node_jieba_parsing([dict1, dict2], lyric, function (_result) {
 //     // console.log(_result.join(" "));
@@ -229,6 +229,20 @@ console.log('show key words', result.slice(0, 30))
 
 
 
+function doAnalysis(lyric) {
 
+    return new Promise((res, rej) => {
+        node_jieba_parsing([dict1, dict2], lyric, function (_result) {
+            console.log(dict1, _result.join(" "));
+            const r = tfidf.analysis(_result.join(" "))
+            res(r)
+        });
+    })
+}
+
+module.exports = {
+    doAnalysis,
+    lyric,
+}
 
 
