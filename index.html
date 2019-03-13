@@ -5,14 +5,32 @@
     <title>Rap Words</title>
 </head>
 <style>
-    body{
-        margin: 0;
-    }
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
     .background-S{
         background-color: rgba(0, 0, 0, 1);
-        width: 100vw;
+        width: 100%;
         height: 100vh;
         padding-top: 40px;
+        box-sizing: border-box;
     }
 
     pre {
@@ -22,18 +40,32 @@
     .s-flex {
         display: flex;
     }
+    .s-flex.aic {
+        align-items: center;
+    }
+    .s-flex.jcc {
+        justify-content: center;
+    }
     .f1 {
         flex:1;
+        font-size: 14px;
+    }
+    .f2{
+        padding: 0 20px;
     }
     .h100 {
         height: 100%;
     }
+    
     .main {
-        height: calc(100vh - 200px);
+        height: calc(100vh - 80px);
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
     }
     #textA {
         width: 100%;
-        height: calc(100% - 40px);
+        height: calc(100vh - 240px);
     }
 
     .header {
@@ -49,17 +81,64 @@
     .header .item {
         align-items: center;
     }
+    h1 {
+        font-size: 2em;
+        margin: 0.1em 0;
+        }
+    p{
+        margin: 0 0 0.6em 0;
+    }
     .title {
-        color: red;
+        color: #b5924a;
     }
-    p.title {
-        margin: 0;
-    }
+
     .f1 ul{
-        color: yellow;
+        color: #999999;
         overflow: auto;
+        height: calc(100vh - 240px);
+        border: 4px solid #b69247;
+        list-style-type:decimal;
+    }
+    .f1 .list-title{
+        margin: 15px 0 0 15px;
+        color: #b69247;
+        font-weight: bold;
+    }
+    .f1 li{
+        margin-left: 40px;
+        line-height: 24px;
+    }
+    .button-yellow{
+        width: 120px;
+        height: 48px;
+        font-size: 24px;
+        font-weight: bold;
+        background: #b5924a;
+        color: #4a4a4a;
+        border-radius: 5px;
+        outline: none;
+    }
+    .button-yellow:hover{
+        background-color: #846424;
+        color: #ffffff;
+        
     }
 </style>
+<style>
+    .loader {
+
+        animation: load 1s linear 0s infinite alternate;
+        overflow: hidden;
+    }
+    @keyframes load {
+        0%   {width: 54px}
+        25%  {width: 59px}
+        50%  {width: 64px}
+        75%  {width: 59px}
+        100% {width: 54px}
+    }
+</style>
+
 <body>
 
     
@@ -81,11 +160,11 @@
 </script>
 
 <div  class="background-S">
-    <div class="header s-flex">
+    <!-- <div class="header s-flex">
         <div class="s-flex item">
                 Rap Words
         </div>
-    </div>
+    </div> -->
 <div id="root" class="main text container">
 
 
@@ -103,17 +182,23 @@
 
 class App extends React.Component {
     state = {
-        words: []
+        words: [],
+        isLoading: false,
     }
 
     handleClick() {
         const v = this.text.value
-        doAnalyze(v).then(r => {
-            this.setState({
-                words: r
+        this.setState({isLoading: true, words: [] })
+        setTimeout(() => {
+            
+            doAnalyze(v).then(r => {
+                this.setState({
+                    words: r,
+                    isLoading: false
+                })
+                // document.getElementById('result').innerHTML = JSON.stringify(r, null, 2)
             })
-            // document.getElementById('result').innerHTML = JSON.stringify(r, null, 2)
-        })
+        }, 10);
     }
 
     render() {
@@ -122,21 +207,28 @@ class App extends React.Component {
                 <h1 className="title">TF-IDF</h1>
                 <p className="title">Paste your favorite Chinese rap song's lyric in the textarea then click `Go`. It will show key words for this song using TF-IDF</p>
                 
-                <div className="s-flex main">
+                <div className="s-flex">
                     <div className="f1">      
-                        <div className="ui form h100">
-                            <div className="field h100">
-                                <label>Lyrics</label>
+                        <div className="ui form">
+                            <div className="field">
                                 <textarea ref={(e) => this.text = e} id="textA" defaultValue={lyric}></textarea>
                             </div>
-                            <button className="ui inverted yellow button" onClick={this.handleClick.bind(this)}>Go</button>
                         </div>
                     </div>
+                    <div className="f2 s-flex aic">
+                        <button className="button-yellow" onClick={this.handleClick.bind(this)}>>></button>
+                    </div>
                     <div className="f1">
-                        <ul className="h100">
-                            <li>
-                                {`Word (TF-IDF score)`}
-                            </li>
+                        <ul>
+                            {this.state.isLoading ? (
+                                <div className=" s-flex aic jcc h100">
+                                    Loading...
+                                </div>
+                            ) : (
+                                <div className="list-title">
+                                    {`Word (TF-IDF score)`}
+                                </div>
+                                )}
                             {
                                 this.state.words.slice(0, 30).map(w => {
                                     return (
